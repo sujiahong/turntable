@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "a93f40e4-1992-49da-95cc-05aa08012d57",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "cankao": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "6abc8468-8e98-4901-abab-4e60321d7a68",
+      "importer": "sprite-frame",
       "rawTextureUuid": "a93f40e4-1992-49da-95cc-05aa08012d57",
       "trimType": "auto",
       "trimThreshold": 1,

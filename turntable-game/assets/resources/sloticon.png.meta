@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "48350930-1914-420b-b0d4-5edabd0863ba",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "sloticon": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "759e7b2d-dc6e-41df-9e42-d4ab1db5a064",
+      "importer": "sprite-frame",
       "rawTextureUuid": "48350930-1914-420b-b0d4-5edabd0863ba",
       "trimType": "auto",
       "trimThreshold": 1,

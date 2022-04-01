@@ -72,6 +72,7 @@ export default class SlotItem extends cc.Component {
     init(sType: SlotItemImageTypes) {
         this._sType = sType;
         this.setState(EMSlotStates.kIdle);
+        console.log("22222222 sType=", sType);
     }
 
     private _getImageUrlById(id: number) {
@@ -116,7 +117,6 @@ export default class SlotItem extends cc.Component {
                 break;
             }
         }
-
         this._state = newState;
     }
 

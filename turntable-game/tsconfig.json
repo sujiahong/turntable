@@ -6,7 +6,8 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "outDir": "temp/vscode-dist",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true, // 生成目标文件的sourceMap文件
   },
   "exclude": [
     "node_modules",
