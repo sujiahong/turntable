@@ -6,21 +6,14 @@
  * @LastData: 
  * @Describe: 
  */
-/*
- * @Copyright: 
- * @file name: File name
- * @Data: Do not edit
- * @LastEditor: 
- * @LastData: 
- * @Describe: 
- */
-
 
 import ccclass = cc._decorator.ccclass;
 import menu = cc._decorator.menu;
 import property = cc._decorator.property;
 import { SlotColum } from "./SlotColum";
 import { Utils } from "../util/Util";
+import {decodeConfig, SlotAnimation} from "../config/config";
+import {ResourceManager} from "../manager/ResourceManager";
 //import {timer_mgr} from "../manager/TimerManager";
 
 @ccclass
@@ -36,6 +29,12 @@ export class Slot extends cc.Component{
         console.log(" start start!!");
         // timer_mgr.initialize();
         // timer_mgr.onLogin();
+        this.loadConfig();
+    }
+    private async loadConfig() {
+        // @TODO config export shoud be like ES6 module
+        let cfg = (await ResourceManager.loadRes('config/config', cc.JsonAsset) as cc.JsonAsset);
+        decodeConfig(cfg.json);
     }
 
     protected onEnable(): void
@@ -90,9 +89,19 @@ export class Slot extends cc.Component{
         // }
 
         this.scheduleOnce(()=>{
+            let animation = SlotAnimation.getById(Utils.randomIntInclusive(0, 6));
+            console.log("222222222 animation=", JSON.stringify(animation));
             for (let i = 0; i < this.slotcolums.length; i++) {
                 let line = this.slotcolums[i];
-                line.end(i, 0, Utils.randomIntInclusive(1, 3));
+                let idxType = Utils.randomIntInclusive(1, 3);
+                let type = animation.animation[i];
+                let curve: number[] = [];
+                curve.push(animation.x1[i]);
+                curve.push(animation.y1[i]);
+                curve.push(animation.x2[i]);
+                curve.push(animation.y2[i]);
+                //cc.log(animation.repeat[i]);
+                line.end(i, animation.time[i], idxType, animation.repeat[i], type, curve);
             }
         }, 0.3);
 

@@ -14,7 +14,7 @@ import SlotItem, {
     SlotItemImageTypes
 } from "./SlotItem";
 // import { timingSafeEqual } from "crypto";
-
+var LEN = 6
 export enum EaseTypes {
     linear,
     sineOut,
@@ -75,13 +75,6 @@ export class SlotColum extends cc.Component {
         let initTypes = [SlotItemImageTypes.kCoin, SlotItemImageTypes.kDice, SlotItemImageTypes.kEnergy];
         initTypes.forEach((iType, idx) => {
             let item = this.slotItems[idx];
-            // if (!item) {
-            //     let node = cc.instantiate(templateNode);
-            //     item = node.getComponent<SlotItem>(SlotItem);
-            //     this.slotItems.push(item);
-            //     node.parent = templateNode.parent;
-            // }
-            console.log("_initSlotItems iType=", iType, " idx=", idx, item["node"].y);
             item.init(iType);
         });
 
@@ -89,7 +82,7 @@ export class SlotColum extends cc.Component {
         let centerIdx = Math.floor(items.length / 2);////中间的那个
         for (let i = 0; i < centerIdx; i++) {
             let item = items[i];
-            let y = this.center + (centerIdx - i) * (item.node.height + 15);
+            let y = this.center + (centerIdx - i) * (item.node.height + LEN);
             item.node.y = y;
             this._itemheight = item.node.height;
             if (i === 0) {
@@ -98,16 +91,18 @@ export class SlotColum extends cc.Component {
         }
         let centerItem = items[centerIdx];
         centerItem.node.y = this.center;
-        this._moveOnce = -(centerItem.node.height + 15) / 2;
+        this._moveOnce = -(centerItem.node.height + LEN) / 2;
         for (let i = centerIdx + 1; i < items.length; i++) {
             let item = items[i];
-            let y = this.center - (i - centerIdx) * (item.node.height + 15);
+            let y = this.center - (i - centerIdx) * (item.node.height + LEN);
             item.node.y = y;
             if (i === items.length - 1) {
-                this._bottom = Math.floor(y - item.node.height - 15);
+                this._bottom = Math.floor(y - (item.node.height + LEN));
             }
         }
         this._height = this._top - this._bottom;
+
+        console.log(" @@@@@ ", this._top, this._bottom, this._height, centerIdx, this.center)
     }
 
     private _selectItem: SlotItem = null;//////选中的item
@@ -173,7 +168,8 @@ export class SlotColum extends cc.Component {
                 distance = this._moveOnce;
                 break;
             }case EMSlotLineStates.kEnd: {
-                if (Math.abs(this._genTargetY() - this.center) <= 5 && this._endMoving <= (this._endDistance - this._easeDistance)) {
+                //console.log("4444444 ", this.lineId, distance, this._genTargetY(), this.center, this._endMoving, this._endDistance, this._easeDistance);
+                if (Math.abs(this._genTargetY() - this.center) <= 6 && this._endMoving <= (this._endDistance - this._easeDistance)) {
                     this._endMoving = 0;
                     this._setState(EMSlotLineStates.kEndAction);
                     if (distance / (this._top - this._bottom)) {
@@ -182,6 +178,7 @@ export class SlotColum extends cc.Component {
                 }
                 distance = this._moveOnce;
                 this._endMoving += this._moveOnce;
+                
                 break;
             }case EMSlotLineStates.kIdle: {
                 return;
@@ -190,7 +187,7 @@ export class SlotColum extends cc.Component {
             }
         }
         //this.k+=distance;
-        console.log("333333333", distance);
+        //console.log("333333333", distance);
         // if(this.type3 == 4){
         //     console.log(this._easeDistance,this._endDistance,this._height,this.k,"111111111");
         // }
@@ -218,25 +215,25 @@ export class SlotColum extends cc.Component {
         //tmp_item.slotSprite.node.color=new cc.Color(255,0,0,255);
         
         this._selectItem = tmp_item;
-        this._endDur = 2;
-        this._repeat = 4;
-        // this._controlPs = controlP;
-        // if (repeat < 0) {
-        //     repeat = 0;
-        // }
+        this._endDur = dur;
+        this._repeat = repeat;
+        this._controlPs = controlP;
+        if (repeat < 0) {
+            repeat = 0;
+        }
 
         this._endDistance = -this._height * this._repeat - this._moveOnce;
 
-        // if (type == 0) {
-        //     this._easeDistance = -this._moveOnce;
-        // } else {
-        this._easeDistance = -this._height * this._repeat - this._moveOnce;
-        // }
+        if (type == 0) {
+            this._easeDistance = -this._moveOnce;
+        } else {
+            this._easeDistance = -this._height * this._repeat - this._moveOnce;
+        }
 
         this._setState(EMSlotLineStates.kEnd);
         let defer = new Defer();
         this._endDefer = defer;
-        //this.type = type;
+        this.type = type;
         this.lineId = id;////保存列id
         //this.audio = audio;
         await defer.promise;
@@ -245,39 +242,30 @@ export class SlotColum extends cc.Component {
     private _playEndAni() {
         let dur = this._endDur;
         let height = this._top - this._bottom;
-        // let item = this._selectItem;
         let callback = () => {
             // this.audioEnd.play();
             console.log("line22222222 play end anim anim anim");
+            for (let i = 0; i < this.slotItems.length; ++i)
+            {
+                console.log("7777 ", this.lineId, this.slotItems[i].node.y, this._bottom, this._moveOnce, this._top);
+                if (this.slotItems[i].node.y < this._bottom - this._moveOnce)
+                    this.slotItems[i].node.y = this._top;
+            }
         };
-        // if (this.lineId == 1 && this.type3 != 0) {
-        //     // this.audioStart.stop();
-        //     // this.audioNext.play();
-        // }
-        // if (this.lineId == 2) {
-        //     callback = () => {
-        //         // if (this.type != 0) {
-        //         //     this.audioNext.stop();
-        //         // } else {
-        //         //     this.audioStart.stop();
-        //         // }
-        //         // this.audioEnd.play();
-        //     }
-        // }
         this.slotItems.forEach((item, idx) => {
             let ease;
-            //if (this.type == 0) {
-                // ease = easeout;
-            // } else {
-            ease = bezierByTime([2,2,4,4]);
-            // }
+            if (this.type == 0) {
+                ease = easeout;
+            } else {
+                ease = bezierByTime(this._controlPs);
+            }
             this._endTween(item, dur, ease, height, callback);
         });
     }
 
     private _endTween(item: SlotItem, dur: number, ease, height: number, callback: Function) {
         cc.log(`开始老虎机停止缓动,ease distance:${this._easeDistance},ease type:${this.type},height:${this._height},move once；${this._moveOnce}`);
-        //if (this.type == 4) {
+        if (this.type == 4) {
             cc.tween(item.node).by(0.96 * dur, {y: this._easeDistance - 25}, {
                     easing: ease,
                     progress: (start: number, end: number, current: number, time: number) => {
@@ -303,24 +291,26 @@ export class SlotColum extends cc.Component {
                 this._endDefer && this._endDefer.resolve();
                 callback()
             }).start();
-
-        // } else {
-        //     cc.tween(item.node).by(dur, {y: this._easeDistance}, {
-        //             easing: ease,
-        //             progress: (start: number, end: number, current: number, time: number) => {
-        //                 let dis = (end - start) * time;
-        //                 if (Math.abs(dis) > Math.abs(this._bottom - start)) {
-        //                     current = this._top + (dis - (this._bottom - start)) % height;
-        //                     return current;
-        //                 }
-        //                 return dis + start;
-        //             }
-        //         }
-        //     ).call(() => {
-        //         this._setState(EMSlotLineStates.kIdle);
-        //         this._endDefer && this._endDefer.resolve();
-        //         callback()
-        //     }).start();
-        // }
+        } else {
+            cc.tween(item.node).by(dur, {y: this._easeDistance}, {
+                    easing: ease,
+                    progress: (start: number, end: number, current: number, time: number) => {
+                        let dis = (end - start) * time;
+                        let cur = dis + start;
+                        if (Math.abs(cur) > Math.abs(this._bottom)) {
+                            let tmp = this._top + (cur - this._bottom) % this._height;
+                            console.log("开始老虎机停止缓动444444 ", this.lineId, item.itemType, cur, current, start, end, tmp);
+                            return tmp;
+                        }
+                        console.log("开始老虎机停止缓动5555555 ", this.lineId, item.itemType, cur);
+                        return cur;
+                    }
+                }
+            ).call(() => {
+                this._setState(EMSlotLineStates.kIdle);
+                //this._endDefer && this._endDefer.resolve();
+                callback()
+            }).start();
+        }
     }
 }
