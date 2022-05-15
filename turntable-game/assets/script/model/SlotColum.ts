@@ -14,7 +14,7 @@ import SlotItem, {
     SlotItemImageTypes
 } from "./SlotItem";
 // import { timingSafeEqual } from "crypto";
-var LEN = 6
+var LEN = 52
 export enum EaseTypes {
     linear,
     sineOut,
