@@ -14,6 +14,7 @@ import { SlotColum } from "./SlotColum";
 import { Utils } from "../util/Util";
 import {decodeConfig, SlotAnimation} from "../config/config";
 import {ResourceManager} from "../manager/ResourceManager";
+import { CoinEmitter } from "../anim/CoinEmitter";
 //import {timer_mgr} from "../manager/TimerManager";
 
 @ccclass
@@ -23,7 +24,8 @@ export class Slot extends cc.Component{
     slotcolums: SlotColum[] = [];
     @property(cc.Node)
     startNode: cc.Node = null;
-
+    @property(CoinEmitter)
+    coinEmitter: CoinEmitter = null;
     start()
     {
         console.log(" start start!!");
@@ -72,6 +74,7 @@ export class Slot extends cc.Component{
                 //     line.end(idx);
                 // }, 0.1);
             }, idx * 0.1);
+            this.coinEmitter.fire(6);
         });        
         // let stopPromises = [];
         // for (let i = 0; i < this.slotcolums.length; i++) {
